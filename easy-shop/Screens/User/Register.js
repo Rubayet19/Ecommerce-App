@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { Box, Text, VStack, Input, Button } from 'native-base';
+import Toast from 'react-native-toast-message';
+import axios from 'axios';
+import baseURL from '../../assets/common/baseUrl';
 
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,9 +15,43 @@ const Register = ({ navigation }) => {
     if (!email || !name || !phone || !password) {
       Alert.alert('Error', 'Please fill in your credentials');
     } else {
-      // Register logic here
+      // Create the user object
+      const user = {
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
+      };
+  
+      // Send the user object to the server
+      axios
+        axios.post(`${baseURL}users/`, user)
+        .then((res) => {
+          if (res.status == 200) {
+            Toast.show({
+              topOffset: 60,
+              type: 'success',
+              text1: 'Registration Succeeded',
+              text2: 'Please Login into your account',
+            });
+            setTimeout(() => {
+              navigation.navigate('Login');
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          console.log('Error while registering:', error.response.data);
+          Toast.show({
+            topOffset: 60,
+            type: 'error',
+            text1: 'Something went wrong',
+            text2: 'Please try again',
+          });
+        });
+        
     }
   };
+  
 
   return (
     <Box flex={1} justifyContent="center" alignItems="center" bg="white">
