@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 
-import ProductContainer from "../Screens/Products/ProductContainer";
-import SingleProduct from "../Screens/Products/SingleProduct";
+import ProductContainer from "../Views/Products/ProductContainer";
+import SingleProduct from "../Views/Products/SingleProduct";
 import Header from "../Shared/Header"; // Import Header component
 
 const Stack = createStackNavigator();
