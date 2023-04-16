@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { Box, Text, VStack, Input, Button } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
 
-const Login = ({ navigation }) => {
+import AuthGlobal from '../../Context/store/AuthGlobal';
+import { loginUser } from '../../Context/actions/Auth.actions';
+
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const context = useContext(AuthGlobal);
+  const navigation = useNavigation();
 
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -14,9 +20,19 @@ const Login = ({ navigation }) => {
     if (email === '' || password === '') {
       Alert.alert('Error', 'Please fill in your credentials');
     } else {
-      console.log('Login');
+      const user = {
+        email: email,
+        password: password,
+      };
+      loginUser(user, context.dispatch);
     }
   };
+
+  useEffect(() => {
+    if (context.stateUser.isAuthenticated) {
+      navigation.navigate('User Profile');
+    }
+  }, [context.stateUser]);
 
   return (
     <Box flex={1} justifyContent="center" alignItems="center" bg="white">
@@ -40,11 +56,7 @@ const Login = ({ navigation }) => {
           Login
         </Button>
         <Text textAlign="center">Don't have an account?</Text>
-        <Button
-          width="100%"
-          variant="outline"
-          onPress={handleRegister}
-        >
+        <Button width="100%" variant="outline" onPress={handleRegister}>
           Register
         </Button>
       </VStack>
@@ -55,4 +67,5 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({});
 
 export default Login;
+
 
