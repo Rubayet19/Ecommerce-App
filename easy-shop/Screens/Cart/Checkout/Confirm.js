@@ -1,17 +1,32 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Alert } from 'react-native';
 import { VStack, Text, Box, Button, HStack, Center } from 'native-base';
 import { connect } from "react-redux";
 import { clearCart } from "../../../Redux/Actions/cartActions";
+
 
 const Confirm = (props) => {
   const shippingDetails = props.route.params?.shippingDetails;
   const cartItems = props.cartItems || [];
 
+
   const handlePlaceOrder = () => {
     props.clearCart();
     props.navigation.navigate('Cart');
+    Alert.alert(
+      'Order placed!',
+      'Your order has been placed successfully.',
+      [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ],
+      { cancelable: false }
+    );
   };
+  
+  
 
 
   const getTotalPrice = () => {
