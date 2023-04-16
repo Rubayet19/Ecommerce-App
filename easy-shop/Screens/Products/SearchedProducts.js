@@ -2,19 +2,23 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, Pressable } from 'react-native';
 import { Box, VStack, HStack, Image, Text } from 'native-base';
 
+
+
 var { width } = Dimensions.get("window");
 
 const SearchedProduct = (props) => {
-  const { productsFiltered } = props;
+  const { productsFiltered, onProductPress } = props;
+  
   return (
     <ScrollView style={{ width: width }}>
       {productsFiltered.length > 0 ? (
         productsFiltered.map((item) => (
           <Pressable
             onPress={() => {
-              props.navigation.navigate("Product Detail", { item: item });
+              console.log("Navigating to:", item);
+              onProductPress(item);
             }}
-            key={item._id.$oid}
+            key={item._id && item._id.$oid ? item._id.$oid : Math.random().toString()}
           >
             <Box
               borderColor="gray.200"
@@ -34,12 +38,7 @@ const SearchedProduct = (props) => {
                   alt={item.name}
                   size="sm"
                 />
-                <VStack>
-                  <Text>{item.name}</Text>
-                  <Text fontSize="sm" color="gray.500" noOfLines={2}>
-                    {item.description}
-                  </Text>
-                </VStack>
+
               </HStack>
             </Box>
           </Pressable>

@@ -11,6 +11,9 @@ import {
 } from "native-base";
 import { SearchIcon } from "native-base";
 
+import baseUrl from "../../assets/common/baseUrl";
+import axios from "axios";
+
 import ProductList from "./ProductList";
 import SearchedProduct from "./SearchedProducts";
 import Banner from "../../Shared/Banner";
@@ -19,7 +22,7 @@ import CategoryFilter from "./CategoryFilter";
 var { height } = Dimensions.get("window");
 
 const data = require("../../assets/data/products.json");
-const productsCategories = require("../../assets/data/categories.json");
+//const productsCategories = require("../../assets/data/categories.json");
 
 const ProductContainer = (props) => {
   const [products, setProducts] = useState([]);
@@ -30,15 +33,39 @@ const ProductContainer = (props) => {
   const [categories, setCategories] = useState([]);
   const [active, setActive] = useState();
   const [initialState, setInitialState] = useState([]);
+  const handleProductPress = (item) => {
+    props.navigation.navigate("Product Detail", { item: item });
+  };
 
   useEffect(() => {
-    setProducts(data);
-    setProductsFiltered(data);
+    //setProducts(data);
+    //setProductsFiltered(data);
     setFocus(false);
-    setProductsCtg(data);
-    setCategories(productsCategories);
+    //setProductsCtg(data);
+    //setCategories(productsCategories);
     setActive(-1);
-    setInitialState(data);
+    //setInitialState(data);
+
+    // Get products
+    axios
+      .get(`${baseUrl}products`)
+      .then((res) => {
+        console.log("Fetched products:", res.data); 
+        setProducts(res.data);
+        setProductsFiltered(res.data);
+        setProductsCtg(res.data);
+        setInitialState(res.data);
+      })
+
+  // Fetch categories from the server
+  axios
+    .get(`${baseUrl}categories`)
+    .then((res) => {
+      setCategories(res.data);
+    })
+    .catch((error) => {
+      console.log("Error fetching categories:", error);
+    });
 
     return () => {
       setProducts([]);
@@ -74,12 +101,28 @@ const ProductContainer = (props) => {
       setProductsFiltered(initialState);
       setActive(true);
     } else {
-      const categoryName = categories.find((category) => category._id === ctg).name;
-      const filteredProducts = products.filter((i) => i.category.name === categoryName);
-      setProductsFiltered(filteredProducts);
-      setActive(true);
+      const categoryObj = categories.find((category) => (category._id ? category._id.toString() === ctg : false));
+  
+      if (categoryObj && categoryObj.name) {
+        const categoryName = categoryObj.name;
+        console.log("Category name:", categoryName);
+  
+        const filteredProducts = products.filter((i) => {
+          console.log("Product category:", i.category);
+          return i.category && i.category.name === categoryName;
+        });
+  
+        console.log("Filtered products:", filteredProducts);
+  
+        setProductsFiltered(filteredProducts);
+        setActive(true);
+      } else {
+        console.log("Category not found");
+      }
     }
   };
+  
+  
 
   return (
     <ScrollView>
@@ -113,8 +156,8 @@ const ProductContainer = (props) => {
 
         {focus ? (
           <SearchedProduct
-            navigation={props.navigation}
-            productsFiltered={productsFiltered}
+          productsFiltered={productsFiltered}
+          onProductPress={handleProductPress}
           />
         ) : (
           <>

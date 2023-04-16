@@ -6,15 +6,35 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import { Text, HStack } from "native-base";
+import { Text, HStack, VStack } from "native-base";
 import { Button } from "react-native";
 
-import { connect } from 'react-redux';
-import * as actions from '../../Redux/Actions/cartActions';
+import { connect } from "react-redux";
+import * as actions from "../../Redux/Actions/cartActions";
+import TrafficLight from "../../Shared/StyledComponents/TrafficLight";
 
 const SingleProduct = (props) => {
   const [item, setItem] = useState(props.route.params.item);
   const [availability, setAvailability] = useState(null);
+  const [availabilityText, setAvailabilityText] = useState("");
+
+  useEffect(() => {
+    if (props.route.params.item.countInStock == 0) {
+      setAvailability(<TrafficLight unavailable></TrafficLight>);
+      setAvailabilityText("Unavailable");
+    } else if (props.route.params.item.countInStock <= 5) {
+      setAvailability(<TrafficLight limited></TrafficLight>);
+      setAvailabilityText("Limited Stock");
+    } else {
+      setAvailability(<TrafficLight available></TrafficLight>);
+      setAvailabilityText("Available");
+    }
+
+    return () => {
+      setAvailability(null);
+      setAvailabilityText("");
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -32,6 +52,11 @@ const SingleProduct = (props) => {
         </View>
         <Text style={styles.title}>{item.name}</Text>
         <Text style={styles.contentText}>{item.brand}</Text>
+        <VStack alignItems="center" style={styles.availabilityContainer}>
+          <Text style={styles.availabilityText}>{availabilityText}</Text>
+          {availability}
+        </VStack>
+        <Text style={styles.descriptionText}>{item.description}</Text>
       </ScrollView>
       <HStack
         style={styles.bottomContainer}
@@ -40,19 +65,18 @@ const SingleProduct = (props) => {
         justifyContent="space-between"
       >
         <Text style={styles.price}>${item.price}</Text>
-        <Button title="Add" onPress={() => { props.addItemToCart(item) }} />
-
+        <Button title="Add" onPress={() => props.addItemToCart(item)} />
       </HStack>
     </View>
   );
 };
 
-const mapToDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-      addItemToCart: (product) => 
-          dispatch(actions.addToCart({quantity: 1, product}))
-  }
-}
+    addItemToCart: (product) =>
+      dispatch(actions.addToCart({ quantity: 1, product })),
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -95,13 +119,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: "center",
   },
-  availability: {
-    flexDirection: "row",
-    marginBottom: 10,
-  },
-});
-
-export default connect(null, mapToDispatchToProps)(SingleProduct);
+  availabilityText: {
+    fontSize: 16,
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 5,
+    },
+    descriptionText: {
+    fontSize: 16,
+    textAlign: "center",
+    paddingHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 40,
+    },
+    });
+    
+    export default connect(null, mapDispatchToProps)(SingleProduct);
 
 
 
