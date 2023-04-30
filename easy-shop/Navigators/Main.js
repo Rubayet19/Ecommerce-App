@@ -45,7 +45,7 @@ const Main = () => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Admin"
           component={HomeNavigator}
           options={{
@@ -53,7 +53,7 @@ const Main = () => {
               <Icon name="cog" color={color} size={30} />
             ),
           }}
-        />
+        /> */}
     
         <Tab.Screen
           name="User"
