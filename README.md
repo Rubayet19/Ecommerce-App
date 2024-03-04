@@ -37,25 +37,25 @@ This section guides you through setting up the E-commerce App on your local deve
    
 2. **Set Up Backend**
 
-Navigate to the backend directory (if separate) and install dependencies:
-cd backend
-npm install
+   Navigate to the backend directory (if separate) and install dependencies:
+   cd backend
+   npm install
 
-Create a .env file in the backend directory. Add your MongoDB URI and any other environment variables required by the app:
-DATABASE_URI=mongodb+srv://your_mongodb_uri
-SECRET_KEY=your_secret_key
+   Create a .env file in the backend directory. Add your MongoDB URI and any other environment variables required by the app:
+   DATABASE_URI=mongodb+srv://your_mongodb_uri
+   SECRET_KEY=your_secret_key
 
 3. **Set Up Frontend**
 
-Navigate to the frontend directory (if separate) and install dependencies:
-
-cd ../frontend
-npm install
+   Navigate to the frontend directory (if separate) and install dependencies:
+   
+   cd ../frontend
+   npm install
 
 4. **Start server and client**
-- npm start // For server
-- npm run android // For client on Android
-- npm run ios // For client on iOS
+   - npm start // For server
+   - npm run android // For client on Android
+   - npm run ios // For client on iOS
 
 
 ## Usage
